@@ -1,4 +1,5 @@
 import { describe, expect, test } from "bun:test";
+import { RegexMatcher } from ".";
 
 describe("RegexMatcher", () => {
   // @ts-ignore
