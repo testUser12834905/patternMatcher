@@ -13,8 +13,7 @@ export class RegexMatcher {
 
   match(text: string): boolean {
     this.text = text;
-    this.patternIndex = 0;
-    this.textIndex = 0;
+    this.resetIndices();
     return this.matchHere();
   }
 
@@ -83,9 +82,13 @@ export class RegexMatcher {
     return this.pattern[this.patternIndex];
   }
 
+  private hasRemainingText(): boolean {
+    return this.textIndex < this.text.length;
+  }
+
   private isCurrentCharMatch(): boolean {
     return (
-      this.textIndex < this.text.length &&
+      this.hasRemainingText() &&
       (this.getCurrentPatternChar() === "." ||
         this.getCurrentPatternChar() === this.text[this.textIndex])
     );
@@ -93,7 +96,7 @@ export class RegexMatcher {
 
   private isCurrentCharMatchWith(char: string): boolean {
     return (
-      this.textIndex < this.text.length &&
+      this.hasRemainingText() &&
       (char === "." || char === this.text[this.textIndex])
     );
   }
@@ -109,5 +112,10 @@ export class RegexMatcher {
 
   private incrementTextIndexBy(amount: number = 1): void {
     this.textIndex += amount;
+  }
+
+  private resetIndices(): void {
+    this.patternIndex = 0;
+    this.textIndex = 0;
   }
 }
