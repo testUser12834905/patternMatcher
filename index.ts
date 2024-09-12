@@ -31,9 +31,6 @@ export class RegexMatcher {
       if (nextChar === "+") {
         return this.matchPlus(this.pattern[this.patternIndex]);
       }
-      if (nextChar === "?") {
-        return this.matchQuestion(this.pattern[this.patternIndex]);
-      }
     }
 
     if (
@@ -76,19 +73,6 @@ export class RegexMatcher {
     ) {
       if (this.matchHere()) return true;
       this.textIndex++;
-    }
-    return this.matchHere();
-  }
-
-  private matchQuestion(c: string): boolean {
-    this.patternIndex += 2;
-    if (
-      this.textIndex < this.text.length &&
-      (c === "." || c === this.text[this.textIndex])
-    ) {
-      const matchWithChar = this.matchHere();
-      if (matchWithChar) return true;
-      this.textIndex--;
     }
     return this.matchHere();
   }
