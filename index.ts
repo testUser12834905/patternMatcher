@@ -86,9 +86,10 @@ export class RegexMatcher {
       this.textIndex < this.text.length &&
       (c === "." || c === this.text[this.textIndex])
     ) {
-      this.textIndex++;
+      const matchWithChar = this.matchHere();
+      if (matchWithChar) return true;
+      this.textIndex--;
     }
     return this.matchHere();
   }
 }
-
