@@ -19,27 +19,22 @@ export class RegexMatcher {
   }
 
   private matchHere(): boolean {
-    if (this.patternIndex === this.pattern.length) {
-      return this.textIndex === this.text.length;
+    if (this.isPatternEnd()) {
+      return this.isTextEnd();
     }
 
-    if (this.patternIndex + 1 < this.pattern.length) {
-      const nextChar = this.pattern[this.patternIndex + 1];
+    if (this.hasNextPatternChar()) {
+      const nextChar = this.getNextPatternChar();
       if (nextChar === "*") {
-        return this.matchStar(this.pattern[this.patternIndex]);
+        return this.matchStar(this.getCurrentPatternChar());
       }
       if (nextChar === "+") {
-        return this.matchPlus(this.pattern[this.patternIndex]);
+        return this.matchPlus(this.getCurrentPatternChar());
       }
     }
 
-    if (
-      this.textIndex < this.text.length &&
-      (this.pattern[this.patternIndex] === "." ||
-        this.pattern[this.patternIndex] === this.text[this.textIndex])
-    ) {
-      this.patternIndex++;
-      this.textIndex++;
+    if (this.isCurrentCharMatch()) {
+      this.advanceIndices();
       return this.matchHere();
     }
 
@@ -47,33 +42,72 @@ export class RegexMatcher {
   }
 
   private matchStar(char: string): boolean {
-    this.patternIndex += 2;
-    while (
-      this.textIndex < this.text.length &&
-      (char === "." || char === this.text[this.textIndex])
-    ) {
+    this.advancePatternIndex(2);
+    while (this.isCurrentCharMatchWith(char)) {
       if (this.matchHere()) return true;
-      this.textIndex++;
+      this.advanceTextIndex();
     }
     return this.matchHere();
   }
 
   private matchPlus(char: string): boolean {
-    if (
-      this.textIndex >= this.text.length ||
-      (char !== "." && char !== this.text[this.textIndex])
-    ) {
+    if (!this.isCurrentCharMatchWith(char)) {
       return false;
     }
-    this.patternIndex += 2;
-    this.textIndex++;
-    while (
-      this.textIndex < this.text.length &&
-      (char === "." || char === this.text[this.textIndex])
-    ) {
+    this.advancePatternIndex(2);
+    this.advanceTextIndex();
+    while (this.isCurrentCharMatchWith(char)) {
       if (this.matchHere()) return true;
-      this.textIndex++;
+      this.advanceTextIndex();
     }
     return this.matchHere();
+  }
+
+  private isPatternEnd(): boolean {
+    return this.patternIndex === this.pattern.length;
+  }
+
+  private isTextEnd(): boolean {
+    return this.textIndex === this.text.length;
+  }
+
+  private hasNextPatternChar(): boolean {
+    return this.patternIndex + 1 < this.pattern.length;
+  }
+
+  private getNextPatternChar(): string {
+    return this.pattern[this.patternIndex + 1];
+  }
+
+  private getCurrentPatternChar(): string {
+    return this.pattern[this.patternIndex];
+  }
+
+  private isCurrentCharMatch(): boolean {
+    return (
+      this.textIndex < this.text.length &&
+      (this.getCurrentPatternChar() === "." ||
+        this.getCurrentPatternChar() === this.text[this.textIndex])
+    );
+  }
+
+  private isCurrentCharMatchWith(char: string): boolean {
+    return (
+      this.textIndex < this.text.length &&
+      (char === "." || char === this.text[this.textIndex])
+    );
+  }
+
+  private advanceIndices(): void {
+    this.patternIndex++;
+    this.textIndex++;
+  }
+
+  private advancePatternIndex(amount: number = 1): void {
+    this.patternIndex += amount;
+  }
+
+  private advanceTextIndex(amount: number = 1): void {
+    this.textIndex += amount;
   }
 }
