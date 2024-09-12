@@ -34,7 +34,7 @@ export class RegexMatcher {
     }
 
     if (this.isCurrentCharMatch()) {
-      this.advanceIndices();
+      this.incrementIndices();
       return this.matchHere();
     }
 
@@ -42,10 +42,10 @@ export class RegexMatcher {
   }
 
   private matchStar(char: string): boolean {
-    this.advancePatternIndex(2);
+    this.incrementPatternIndexBy(2);
     while (this.isCurrentCharMatchWith(char)) {
       if (this.matchHere()) return true;
-      this.advanceTextIndex();
+      this.incrementTextIndexBy();
     }
     return this.matchHere();
   }
@@ -54,11 +54,11 @@ export class RegexMatcher {
     if (!this.isCurrentCharMatchWith(char)) {
       return false;
     }
-    this.advancePatternIndex(2);
-    this.advanceTextIndex();
+    this.incrementPatternIndexBy(2);
+    this.incrementTextIndexBy();
     while (this.isCurrentCharMatchWith(char)) {
       if (this.matchHere()) return true;
-      this.advanceTextIndex();
+      this.incrementTextIndexBy();
     }
     return this.matchHere();
   }
@@ -98,16 +98,16 @@ export class RegexMatcher {
     );
   }
 
-  private advanceIndices(): void {
+  private incrementIndices(): void {
     this.patternIndex++;
     this.textIndex++;
   }
 
-  private advancePatternIndex(amount: number = 1): void {
+  private incrementPatternIndexBy(amount: number = 1): void {
     this.patternIndex += amount;
   }
 
-  private advanceTextIndex(amount: number = 1): void {
+  private incrementTextIndexBy(amount: number = 1): void {
     this.textIndex += amount;
   }
 }
