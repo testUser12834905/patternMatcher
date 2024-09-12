@@ -46,11 +46,11 @@ export class RegexMatcher {
     return false;
   }
 
-  private matchStar(c: string): boolean {
+  private matchStar(char: string): boolean {
     this.patternIndex += 2;
     while (
       this.textIndex < this.text.length &&
-      (c === "." || c === this.text[this.textIndex])
+      (char === "." || char === this.text[this.textIndex])
     ) {
       if (this.matchHere()) return true;
       this.textIndex++;
@@ -58,10 +58,10 @@ export class RegexMatcher {
     return this.matchHere();
   }
 
-  private matchPlus(c: string): boolean {
+  private matchPlus(char: string): boolean {
     if (
       this.textIndex >= this.text.length ||
-      (c !== "." && c !== this.text[this.textIndex])
+      (char !== "." && char !== this.text[this.textIndex])
     ) {
       return false;
     }
@@ -69,7 +69,7 @@ export class RegexMatcher {
     this.textIndex++;
     while (
       this.textIndex < this.text.length &&
-      (c === "." || c === this.text[this.textIndex])
+      (char === "." || char === this.text[this.textIndex])
     ) {
       if (this.matchHere()) return true;
       this.textIndex++;
